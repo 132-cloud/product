@@ -88,6 +88,10 @@ nav .nav-inner{max-width:1280px;margin:0 auto;padding:0 32px;display:flex;align-
 
 /* CARD GRID */
 .card-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;padding-bottom:80px}
+.card-grid.list-view{grid-template-columns:1fr}
+.card-grid.list-view .product-card{flex-direction:row}
+.card-grid.list-view .card-video{aspect-ratio:16/9;width:280px;flex-shrink:0}
+.card-grid.list-view .card-body{padding:20px 24px}
 .product-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;overflow:hidden;transition:transform .25s,box-shadow .25s,border-color .25s;cursor:pointer;display:flex;flex-direction:column;min-height:0}
 .product-card:hover{transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,0.3);border-color:rgba(255,255,255,0.12)}
 .card-video{position:relative;aspect-ratio:16/9;background:linear-gradient(135deg,rgba(0,101,255,0.12),rgba(0,148,255,0.06));overflow:hidden;display:flex;align-items:center;justify-content:center}
@@ -130,11 +134,11 @@ nav .nav-inner{max-width:1280px;margin:0 auto;padding:0 32px;display:flex;align-
 .detail-block p{font-size:15px;line-height:24px;color:var(--white-80)}
 .detail-features{list-style:none;padding:0}
 .detail-features li{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;font-size:15px;line-height:22px;color:var(--white-80)}
-.detail-features li .check{flex-shrink:0;width:20px;height:20px;background:var(--check-purple);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.detail-features li .check{flex-shrink:0;width:20px;height:20px;background:var(--sky-blue);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:1px}
 .detail-features li .check svg{width:11px;height:11px}
-.detail-value{background:rgba(0,101,255,0.08);border:1px solid rgba(0,101,255,0.15);border-radius:12px;padding:20px 24px}
-.detail-value p{font-size:15px;line-height:24px;color:var(--white-80)}
-.detail-cta{margin-top:32px;display:flex;gap:16px;align-items:center}
+.detail-value{background:linear-gradient(0deg,var(--primary-blue) 0%,var(--sky-blue) 100%);border:none;border-radius:12px;padding:20px 24px}
+.detail-value-label{font-size:12px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;color:rgba(255,255,255,0.85);margin-bottom:8px}
+.detail-value p{font-size:15px;line-height:24px;color:#fff}
 
 /* CTA SECTION */
 .cta-section{background:linear-gradient(0deg,var(--primary-blue) 0%,var(--sky-blue) 100%);padding:80px 0;text-align:center}
@@ -183,14 +187,11 @@ footer .footer-inner{max-width:1280px;margin:0 auto;padding:0 32px}
 <svg width="159" height="22" viewBox="0 0 159 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M51.3842 3.1898V18.3745H49.6062L40.4947 7.05336V18.3745H38.326V3.1898H40.1094L49.2156 14.5131V3.1898H51.3842Z" fill="#FFF"/><path d="M65.5994 13.1256V18.3745H63.4518V13.0813L57.4217 3.18559H59.7377L64.5972 11.1864L69.4808 3.1898H71.6274L65.5994 13.1256Z" fill="#FFF"/><path d="M91.7452 18.3745L91.7231 7.31128L86.2352 16.528H85.2372L79.7492 7.36918V18.3745H77.6669V3.1898H79.4461L85.7793 13.8625L92.0273 3.1898H93.8054L93.8275 18.3745H91.7452Z" fill="#FFF"/><path d="M114.232 11.8349C114.737 12.4785 114.99 13.2919 114.991 14.2752C114.991 15.5911 114.495 16.6035 113.504 17.3123C112.513 18.0212 111.071 18.3752 109.176 18.3745H101.932V3.1898H108.748C110.484 3.1898 111.825 3.53686 112.773 4.23096C113.72 4.92507 114.193 5.88692 114.193 7.11652C114.193 7.91169 114.009 8.59843 113.64 9.17673C113.279 9.7487 112.764 10.2073 112.155 10.5C113.033 10.7464 113.725 11.1913 114.232 11.8349ZM104.101 4.94788V9.80627H108.548C109.662 9.80627 110.519 9.60029 111.119 9.18831C111.719 8.77634 112.019 8.17242 112.019 7.37655C112.019 6.58208 111.719 5.97851 111.119 5.56584C110.519 5.15316 109.662 4.94718 108.548 4.94788H104.101ZM111.867 16.0111C112.488 15.6069 112.799 14.9707 112.8 14.1025C112.8 12.4111 111.563 11.565 109.09 11.5643H104.101V16.6175H109.09C110.32 16.6175 111.245 16.415 111.867 16.0101V16.0111Z" fill="#FFF"/><path d="M123.561 16.8133C122.433 15.656 121.869 13.9927 121.869 11.8233V3.19086H124.038V11.738C124.038 14.9924 125.463 16.6193 128.312 16.6186C129.7 16.6186 130.763 16.2175 131.501 15.4153C132.239 14.6131 132.608 13.3873 132.607 11.738V3.1898H134.713V11.8223C134.713 14.0071 134.149 15.6739 133.021 16.8228C131.893 17.9717 130.317 18.5465 128.292 18.5472C126.267 18.5479 124.69 17.9699 123.561 16.8133Z" fill="#FFF"/><path d="M143.852 18.0166C142.789 17.6657 141.954 17.2067 141.346 16.6396L142.149 14.9479C142.727 15.4679 143.468 15.889 144.373 16.2111C145.266 16.5349 146.21 16.7002 147.16 16.6996C148.418 16.6996 149.358 16.4863 149.98 16.0595C150.601 15.6328 150.912 15.0651 150.912 14.3562C150.921 14.1217 150.879 13.8881 150.792 13.6705C150.704 13.4529 150.571 13.2561 150.403 13.0929C150.041 12.7547 149.61 12.4993 149.14 12.3444C148.641 12.1704 147.936 11.9749 147.025 11.7581C146.085 11.5457 145.161 11.2703 144.259 10.9338C143.564 10.6662 142.946 10.2324 142.458 9.67047C141.959 9.09988 141.709 8.32998 141.709 7.36076C141.7 6.58276 141.923 5.81964 142.349 5.16895C142.775 4.51836 143.423 3.99795 144.292 3.60774C145.161 3.21752 146.238 3.02206 147.524 3.02136C148.417 3.02158 149.307 3.13836 150.17 3.36877C150.967 3.56875 151.723 3.9065 152.404 4.36676L151.688 6.10168C151.056 5.69894 150.369 5.38875 149.649 5.18053C148.959 4.97537 148.243 4.86904 147.524 4.86471C146.294 4.86471 145.372 5.08894 144.758 5.53741C144.144 5.98588 143.838 6.56138 143.841 7.2639C143.833 7.50033 143.875 7.73586 143.964 7.95478C144.054 8.17371 144.189 8.371 144.361 8.53351C144.734 8.87356 145.173 9.13208 145.652 9.29253C146.339 9.52182 147.038 9.7137 147.746 9.86733C148.682 10.0796 149.602 10.355 150.501 10.6916C151.19 10.9638 151.803 11.397 152.29 11.9549C152.789 12.5164 153.039 13.2754 153.039 14.232C153.045 15.0074 152.818 15.7669 152.388 16.4122C151.954 17.0712 151.296 17.592 150.413 17.9745C149.531 18.357 148.447 18.5486 147.16 18.5493C146.036 18.5521 144.918 18.3722 143.852 18.0166V18.0166Z" fill="#FFF"/><path d="M7.79871 10.3895L14.4225 0L19.7715 10.3895H7.85555" fill="#0756FF"/><path d="M14.0267 21.8622L28.4408 17.3165L27.087 1.35382L14.0267 21.8622Z" fill="#0094FF"/><path d="M8.66931 11.4749L14.0183 21.8633L20.6421 11.4749H8.66931Z" fill="#0756FF"/><path d="M14.4141 0L1.35488 20.5084L0 4.44993L14.4141 0Z" fill="#0094FF"/></svg>
 </a>
 <div class="nav-links">
-<a href="#">Solutions</a>
 <a href="#" class="active">Product Hub</a>
-<a href="#">Insights Labs</a>
-<a href="#">Company</a>
-<a href="#">Contact Us</a>
+<a href="https://nymbus.com/lp/contact-us/">Contact Us</a>
 </div>
 <div class="nav-actions">
-<a href="#" class="btn btn-primary">Request Demo</a>
+<a href="https://nymbus.com/lp/request-demo/" class="btn btn-primary">Request Demo</a>
 </div>
 </div>
 </nav>
@@ -200,15 +201,10 @@ footer .footer-inner{max-width:1280px;margin:0 auto;padding:0 32px}
 
 <!-- SIDEBAR -->
 <aside class="sidebar">
-<a href="#" class="sidebar-back">
-<svg viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-Back to Solutions
-</a>
-
 <div class="sidebar-section">
 <h4>Capabilities</h4>
 <ul class="sidebar-nav">
-<li><a href="#" class="active">All Demos</a></li>
+<li><a href="#" class="active">All</a></li>
 <li><a href="#" data-filter="ach">ACH Origination</a></li>
 <li><a href="#" data-filter="positive-pay">Positive Pay</a></li>
 <li><a href="#" data-filter="bfm">Financial Mgmt Tools</a></li>
@@ -227,9 +223,9 @@ Back to Solutions
 <div class="sidebar-section">
 <h4>Product</h4>
 <ul class="sidebar-nav">
-<li><a href="#">Core</a></li>
-<li><a href="#">Digital Banking</a></li>
-<li><a href="#">Connect</a></li>
+<li><a href="#" data-product="core">Core</a></li>
+<li><a href="#" data-product="digital-banking">Digital Banking</a></li>
+<li><a href="#" data-product="connect">Connect</a></li>
 </ul>
 </div>
 </aside>
@@ -239,9 +235,12 @@ Back to Solutions
 
 <!-- HERO -->
 <div class="hub-hero">
+<div class="client-logo" style="margin-bottom:20px">
+<img src="https://res.cloudinary.com/duio2kdnj/image/upload/v1775542977/WaFdBank.png" alt="WaFd Bank" height="28">
+</div>
 <p class="eyebrow eyebrow-sm" style="color:var(--green);margin-bottom:16px">Product Knowledge Hub</p>
 <h1>Core Business Banking <em>Capabilities</em></h1>
-<p>Explore key features designed to support and scale business banking operations — with video walkthroughs for each.</p>
+<p>Explore key features designed to support and scale business banking operations,  with video walkthroughs for each.</p>
 </div>
 
 <!-- FILTER BAR -->
@@ -282,8 +281,8 @@ Core
 <h2>Ready to See It <em>Live?</em></h2>
 <p>Schedule a personalized demo and discover how Nymbus can transform your banking operations.</p>
 <div class="cta-actions">
-<a href="#" class="btn btn-white">Request A Demo</a>
-<a href="#" class="btn btn-outline" style="border-color:rgba(255,255,255,0.5)">Contact Us</a>
+<a href="https://nymbus.com/lp/request-demo/" class="btn btn-white">Request A Demo</a>
+<a href="https://nymbus.com/lp/contact-us/" class="btn btn-outline" style="border-color:rgba(255,255,255,0.5)">Contact Us</a>
 </div>
 </div>
 </section>
@@ -297,16 +296,12 @@ Core
 <p>208 N Laura St. 8th and 9th floor, Jacksonville, FL 32202</p>
 </div>
 <div class="footer-links">
-<a href="#">Privacy Policy</a>
-<a href="#">Press</a>
-<a href="#">Careers</a>
-<a href="#">About</a>
-<a href="#">Contact Us</a>
+<a href="https://nymbus.com/lp/contact-us/">Contact Us</a>
 </div>
 </div>
 <div class="footer-bottom">
 <p>Copyright &copy; 2026 NYMBUS, All rights reserved.</p>
-<p>We use cookies on this site. Visit our <a href="#" style="color:var(--sky-blue)">Privacy Policy</a> for more info.</p>
+<p>We use cookies on this site. Visit our <a href="https://nymbus.com/privacy-policy/" style="color:var(--sky-blue)">Privacy Policy</a> for more info.</p>
 </div>
 </div>
 </footer>
@@ -427,7 +422,7 @@ function renderCards() {
         <h3>${p.title}</h3>
         <p class="card-desc">${p.problem.substring(0, 120)}\u2026</p>
         <div class="card-footer">
-          <span class="text-link" style="font-size:12px">Demo Preview \u2192</span>
+          <span class="text-link" style="font-size:12px">Learn More \u2192</span>
           <span class="watch-time">
             <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M8 5v3l2 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
             ${p.watchTime}
@@ -455,7 +450,7 @@ function openDetail(id) {
         <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M8 5v3l2 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
         ${p.watchTime} watch time
       </span>
-      <span class="detail-meta-item share" onclick="navigator.clipboard.writeText(location.href+'#'+encodeURIComponent('${p.id}'))">
+      <span class="detail-meta-item share" onclick="var u=location.origin+location.pathname+'#'+encodeURIComponent('${p.id}');navigator.clipboard.writeText(u);this.textContent='Copied!'">
         <svg viewBox="0 0 16 16" fill="none"><path d="M6 7l4-3M6 9l4 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="4" cy="8" r="2" stroke="currentColor" stroke-width="1.2"/><circle cx="12" cy="4" r="2" stroke="currentColor" stroke-width="1.2"/><circle cx="12" cy="12" r="2" stroke="currentColor" stroke-width="1.2"/></svg>
         Copy link
       </span>
@@ -466,42 +461,42 @@ function openDetail(id) {
       <p>${p.problem}</p>
     </div>
     <div class="detail-block">
-      <div class="detail-block-label" style="color:var(--sky-blue)"><span class="dot" style="background:var(--sky-blue)"></span> Solution</div>
+      <div class="detail-block-label" style="color:var(--green)"><span class="dot" style="background:var(--green)"></span> Solution</div>
       <p>${p.solution}</p>
     </div>
     <div class="detail-block">
-      <div class="detail-block-label" style="color:var(--green)"><span class="dot" style="background:var(--green)"></span> Key Features</div>
+      <div class="detail-block-label" style="color:var(--sky-blue)"><span class="dot" style="background:var(--sky-blue)"></span> Key Features</div>
       <ul class="detail-features">
         ${p.features.map(f => `<li><span class="check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6l2.5 2.5 4.5-5" stroke="#1F222A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>${f}</li>`).join('')}
       </ul>
     </div>
     <div class="detail-block">
-      <div class="detail-block-label" style="color:var(--amber)"><span class="dot" style="background:var(--amber)"></span> Value</div>
-      <div class="detail-value"><p>${p.value}</p></div>
-    </div>
-    <div class="detail-cta">
-      <a href="#" class="btn btn-primary">Request A Demo</a>
-      <a href="#" class="text-link">Learn More \u2192</a>
+      <div class="detail-value">
+        <div class="detail-value-label">Value</div>
+        <p>${p.value}</p>
+      </div>
     </div>
   `;
   document.querySelector('.detail-video').style.background = p.gradient;
   document.getElementById('detailOverlay').classList.add('open');
   document.getElementById('detailPanel').classList.add('open');
   document.body.style.overflow = 'hidden';
+  history.replaceState(null, '', '#' + encodeURIComponent(id));
 }
 
 function closeDetail() {
   document.getElementById('detailOverlay').classList.remove('open');
   document.getElementById('detailPanel').classList.remove('open');
   document.body.style.overflow = '';
+  history.replaceState(null, '', location.pathname);
 }
 
 document.getElementById('detailClose').addEventListener('click', closeDetail);
 document.getElementById('detailOverlay').addEventListener('click', closeDetail);
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
 
-// Sidebar nav
-document.querySelectorAll('.sidebar-nav a').forEach(link => {
+// Sidebar nav — capabilities filter
+document.querySelectorAll('.sidebar-nav a[data-filter]').forEach(link => {
   link.addEventListener('click', e => {
     e.preventDefault();
     document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
@@ -509,6 +504,43 @@ document.querySelectorAll('.sidebar-nav a').forEach(link => {
     const filter = link.dataset.filter;
     document.querySelectorAll('.product-card').forEach(card => {
       card.style.display = (!filter || card.dataset.id === filter) ? '' : 'none';
+    });
+  });
+});
+
+// Sidebar nav — "All" link
+document.querySelector('.sidebar-nav a:not([data-filter]):not([data-product])').addEventListener('click', e => {
+  e.preventDefault();
+  document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+  e.target.classList.add('active');
+  document.querySelectorAll('.product-card').forEach(card => card.style.display = '');
+});
+
+// Sidebar nav — product filter
+document.querySelectorAll('.sidebar-nav a[data-product]').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+    link.classList.add('active');
+    const productFilter = link.dataset.product.toLowerCase();
+    document.querySelectorAll('.product-card').forEach(card => {
+      const p = products.find(x => x.id === card.dataset.id);
+      const productSlug = p.product.toLowerCase().replace(/\s+/g, '-');
+      card.style.display = (productSlug === productFilter) ? '' : 'none';
+    });
+  });
+});
+
+// Sidebar nav — category filter (SMB, Retail)
+document.querySelectorAll('.sidebar-section:nth-child(2) .sidebar-nav a').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+    link.classList.add('active');
+    const cat = link.textContent.trim().toLowerCase();
+    document.querySelectorAll('.product-card').forEach(card => {
+      const p = products.find(x => x.id === card.dataset.id);
+      card.style.display = (p.category.toLowerCase() === cat) ? '' : 'none';
     });
   });
 });
@@ -532,7 +564,39 @@ document.querySelector('.search-box input').addEventListener('input', e => {
   });
 });
 
+// View toggle (grid / list)
+document.querySelectorAll('.view-toggle button').forEach((btn, i) => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.view-toggle button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const grid = document.querySelector('.card-grid');
+    if (i === 1) { grid.classList.add('list-view'); } else { grid.classList.remove('list-view'); }
+  });
+});
+
 renderCards();
+
+// Deep link: open detail panel from hash on page load
+(function checkHash() {
+  const hash = location.hash.replace(/^#+/, '');
+  if (hash) {
+    const id = decodeURIComponent(hash);
+    const p = products.find(x => x.id === id);
+    if (p) openDetail(id);
+  }
+})();
+
+// Also handle hash changes (e.g. back/forward)
+window.addEventListener('hashchange', () => {
+  const hash = location.hash.replace(/^#+/, '');
+  if (hash) {
+    const id = decodeURIComponent(hash);
+    const p = products.find(x => x.id === id);
+    if (p) openDetail(id);
+  } else {
+    closeDetail();
+  }
+});
 </script>
 
 </body>
