@@ -107,29 +107,31 @@ nav .nav-inner{max-width:1280px;margin:0 auto;padding:0 32px;display:flex;align-
 .tag-category{background:rgba(0,148,255,0.12);color:var(--sky-blue)}
 .tag-product{background:rgba(54,179,126,0.12);color:var(--green)}
 .card-body h3{font-size:18px;font-weight:700;color:#fff;line-height:26px;margin-bottom:8px}
-.card-body .card-desc{font-size:14px;line-height:21px;color:var(--body-gray);margin-bottom:16px;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card-body .card-desc{font-size:14px;line-height:21px;color:var(--body-gray);margin-bottom:16px;flex:1;display:-webkit-box;-webkit-line-clamp:3;line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card-video img{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0}
 .card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06)}
 .card-footer .watch-time{font-size:12px;color:var(--body-gray);display:flex;align-items:center;gap:4px}
 .card-footer .watch-time svg{width:14px;height:14px}
 
 /* DETAIL PANEL (MODAL OVERLAY) */
-.detail-overlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:200;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:opacity .3s}
+.detail-overlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:200;background:rgba(0,0,0,0.75);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);opacity:0;pointer-events:none;transition:opacity .3s}
 .detail-overlay.open{opacity:1;pointer-events:all}
-.detail-panel{position:fixed;top:0;right:0;bottom:0;width:720px;max-width:100%;z-index:201;background:var(--dark-navy);border-left:1px solid rgba(255,255,255,0.08);overflow-y:auto;transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1)}
-.detail-panel.open{transform:translateX(0)}
-.detail-close{position:absolute;top:20px;right:20px;background:rgba(255,255,255,0.08);border:none;border-radius:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:#fff;z-index:5;transition:background .2s}
-.detail-close:hover{background:rgba(255,255,255,0.15)}
-.detail-video{width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,rgba(0,101,255,0.15),rgba(0,148,255,0.08));display:flex;align-items:center;justify-content:center;position:relative}
-.detail-video .play-btn-lg{width:72px;height:72px;border-radius:50%;background:rgba(0,0,0,0.5);border:2px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s}
-.detail-video .play-btn-lg:hover{background:var(--primary-blue);border-color:var(--primary-blue)}
-.detail-video .play-btn-lg svg{width:28px;height:28px;color:#fff;margin-left:3px}
-.detail-content{padding:32px}
+.detail-panel{position:fixed;top:0;left:0;right:0;bottom:0;z-index:201;background:var(--dark-navy);overflow-y:auto;opacity:0;transform:scale(0.97);pointer-events:none;transition:opacity .3s,transform .35s cubic-bezier(.4,0,.2,1)}
+.detail-panel.open{opacity:1;transform:scale(1);pointer-events:all}
+.detail-close{position:fixed;top:20px;right:24px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.12);border-radius:10px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;color:#fff;z-index:210;transition:background .2s}
+.detail-close:hover{background:rgba(255,255,255,0.2)}
+.detail-video-wrap{width:100%;max-width:1400px;margin:0 auto;aspect-ratio:16/9;background:#000;position:relative;overflow:hidden}
+.detail-video-wrap iframe{width:100%;height:100%;border:none;position:absolute;top:0;left:0}
+.detail-video-wrap .play-btn-lg{width:80px;height:80px;border-radius:50%;background:rgba(0,0,0,0.5);border:2px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2}
+.detail-video-wrap .play-btn-lg:hover{background:var(--primary-blue);border-color:var(--primary-blue)}
+.detail-video-wrap .play-btn-lg svg{width:32px;height:32px;color:#fff;margin-left:4px}
+.detail-content{max-width:900px;margin:0 auto;padding:40px 32px 80px}
 .detail-meta{display:flex;gap:16px;align-items:center;margin-bottom:20px;flex-wrap:wrap}
 .detail-meta-item{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--body-gray)}
 .detail-meta-item svg{width:16px;height:16px}
 .detail-meta-item.share{cursor:pointer;color:var(--sky-blue);font-weight:600;transition:color .2s}
 .detail-meta-item.share:hover{color:#66bbff}
-.detail-content h2{font-size:28px;font-weight:800;color:#fff;line-height:36px;margin-bottom:24px;letter-spacing:-0.3px}
+.detail-content h2{font-size:32px;font-weight:800;color:#fff;line-height:40px;margin-bottom:28px;letter-spacing:-0.3px}
 .detail-block{margin-bottom:28px}
 .detail-block-label{font-size:12px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px}
 .detail-block-label .dot{width:8px;height:8px;border-radius:50%}
@@ -186,7 +188,6 @@ footer .footer-inner{max-width:1280px;margin:0 auto;padding:0 32px}
 .sidebar{display:none}
 .main-content{padding-left:0}
 .card-grid{grid-template-columns:1fr 1fr}
-.detail-panel{width:100%}
 }
 @media(max-width:768px){
 .nav-links{display:none}
@@ -323,13 +324,13 @@ Core
 </div>
 </footer>
 
-<!-- DETAIL PANEL -->
+<!-- DETAIL PANEL (fullscreen lightbox) -->
 <div class="detail-overlay" id="detailOverlay"></div>
 <div class="detail-panel" id="detailPanel">
 <button class="detail-close" id="detailClose" aria-label="Close panel">
 <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
 </button>
-<div class="detail-video">
+<div class="detail-video-wrap" id="detailVideo">
 <div class="play-btn-lg">
 <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6,3 20,12 6,21"/></svg>
 </div>
@@ -392,6 +393,10 @@ fetch('ProductHub - Database.csv')
         colorIdx++;
       }
       var accent = capabilityColors[capability];
+      var vimeoId = '', vimeoHash = '';
+      var vUrl = get('Vimeo URL');
+      var vm = vUrl.match(/vimeo\.com\/(\d+)\/([a-f0-9]+)/) || vUrl.match(/vimeo\.com\/(\d+)/);
+      if (vm) { vimeoId = vm[1]; vimeoHash = vm[2] || ''; }
       return {
         id: 'feature-' + i,
         title: get('Feature'),
@@ -404,7 +409,9 @@ fetch('ProductHub - Database.csv')
         solution: get('Solution'),
         features: get('Key Features').split(';').map(function(s){return s.trim();}).filter(Boolean),
         value: get('Value'),
-        vimeoUrl: get('Vimeo URL'),
+        vimeoUrl: vUrl,
+        vimeoId: vimeoId,
+        vimeoHash: vimeoHash,
         accent: accent,
         gradient: gradientFromAccent(accent)
       };
@@ -471,8 +478,9 @@ function renderCards() {
   if (!filtered.length) { grid.innerHTML = '<div class="load-error" style="color:var(--body-gray)">No features match the current filter.</div>'; return; }
   grid.innerHTML = filtered.map(function(p) {
     var desc = (p.problem || '').substring(0, 140) + (p.problem && p.problem.length > 140 ? '\u2026' : '');
+    var thumbHtml = p.vimeoId ? '<img src="https://vumbnail.com/' + p.vimeoId + '.jpg" alt="' + p.title + ' thumbnail" loading="lazy">' : '';
     return '<article class="product-card" data-id="' + p.id + '" tabindex="0" role="button" aria-label="View ' + p.title + ' demo">' +
-      '<div class="card-video" style="background:' + p.gradient + '"><div class="play-btn"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="8,5 19,12 8,19"/></svg></div></div>' +
+      '<div class="card-video" style="background:' + p.gradient + '">' + thumbHtml + '<div class="play-btn"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="8,5 19,12 8,19"/></svg></div></div>' +
       '<div class="card-body"><div class="card-meta"><span class="card-tag tag-category">' + p.category + '</span><span class="card-tag tag-product">' + p.product + '</span></div>' +
       '<h3>' + p.title + '</h3><p class="card-desc">' + desc + '</p>' +
       '<div class="card-footer"><span class="text-link" style="font-size:12px">Learn More \u2192</span>' +
@@ -503,12 +511,21 @@ function getFilteredProducts() {
 function openDetail(id) {
   var p = products.find(function(x){ return x.id===id; });
   if (!p) return;
-  var dv = document.querySelector('.detail-video');
+  var dv = document.getElementById('detailVideo');
   if (p.vimeoUrl) {
-    var m = p.vimeoUrl.match(/vimeo\.com\/(\d+)/) || p.vimeoUrl.match(/player\.vimeo\.com\/video\/(\d+)/);
-    if (m) { dv.innerHTML = '<iframe src="https://player.vimeo.com/video/' + m[1] + '?autoplay=0&title=0&byline=0&portrait=0" style="width:100%;height:100%;border:none" allow="autoplay;fullscreen" allowfullscreen></iframe>'; dv.style.background = '#000'; }
-    else { dv.innerHTML = '<div class="play-btn-lg"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6,3 20,12 6,21"/></svg></div>'; dv.style.background = p.gradient; }
-  } else { dv.innerHTML = '<div class="play-btn-lg"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6,3 20,12 6,21"/></svg></div>'; dv.style.background = p.gradient; }
+    var m = p.vimeoUrl.match(/vimeo\.com\/(\d+)\/([a-f0-9]+)/) || p.vimeoUrl.match(/vimeo\.com\/(\d+)/) || p.vimeoUrl.match(/player\.vimeo\.com\/video\/(\d+)/);
+    if (m) {
+      var embedSrc = 'https://player.vimeo.com/video/' + m[1] + '?title=0&byline=0&portrait=0' + (m[2] ? '&h=' + m[2] : '');
+      dv.innerHTML = '<iframe src="' + embedSrc + '" allow="autoplay;fullscreen" allowfullscreen></iframe>';
+      dv.style.background = '#000';
+    } else {
+      dv.innerHTML = '<div class="play-btn-lg"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6,3 20,12 6,21"/></svg></div>';
+      dv.style.background = p.gradient;
+    }
+  } else {
+    dv.innerHTML = '<div class="play-btn-lg"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6,3 20,12 6,21"/></svg></div>';
+    dv.style.background = p.gradient;
+  }
 
   document.getElementById('detailContent').innerHTML =
     '<div class="detail-meta"><span class="card-tag tag-category">' + p.category + '</span><span class="card-tag tag-product">' + p.product + '</span>' +
@@ -522,6 +539,7 @@ function openDetail(id) {
     '<ul class="detail-features">' + p.features.map(function(f){ return '<li><span class="check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6l2.5 2.5 4.5-5" stroke="#1F222A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' + f + '</li>'; }).join('') + '</ul></div>' +
     (p.value ? '<div class="detail-block"><div class="detail-value"><div class="detail-value-label">Value</div><p>' + p.value + '</p></div></div>' : '');
 
+  document.getElementById('detailPanel').scrollTop = 0;
   document.getElementById('detailOverlay').classList.add('open');
   document.getElementById('detailPanel').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -532,7 +550,7 @@ function closeDetail() {
   document.getElementById('detailOverlay').classList.remove('open');
   document.getElementById('detailPanel').classList.remove('open');
   document.body.style.overflow = '';
-  document.querySelector('.detail-video').innerHTML = '<div class="play-btn-lg"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6,3 20,12 6,21"/></svg></div>';
+  document.getElementById('detailVideo').innerHTML = '<div class="play-btn-lg"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6,3 20,12 6,21"/></svg></div>';
   history.replaceState(null, '', location.pathname);
 }
 
