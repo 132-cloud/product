@@ -473,12 +473,29 @@ function buildFilterPills() {
 }
 
 /* ── RENDER CARDS ── */
+/* ── THUMBNAIL CACHE ── */
+var thumbCache = {};
+function fetchVimeoThumbs() {
+  products.forEach(function(p) {
+    if (!p.vimeoUrl || thumbCache[p.id]) return;
+    var oembedUrl = 'https://vimeo.com/api/oembed.json?url=' + encodeURIComponent(p.vimeoUrl.split('?')[0]) + '&width=640';
+    fetch(oembedUrl).then(function(r) { return r.ok ? r.json() : null; }).then(function(data) {
+      if (data && data.thumbnail_url) {
+        thumbCache[p.id] = data.thumbnail_url;
+        var img = document.querySelector('.product-card[data-id="' + p.id + '"] .card-video img');
+        if (img) { img.src = data.thumbnail_url; img.style.opacity = '1'; }
+      }
+    }).catch(function(){});
+  });
+}
+
 function renderCards() {
   var filtered = getFilteredProducts();
   if (!filtered.length) { grid.innerHTML = '<div class="load-error" style="color:var(--body-gray)">No features match the current filter.</div>'; return; }
   grid.innerHTML = filtered.map(function(p) {
     var desc = (p.problem || '').substring(0, 140) + (p.problem && p.problem.length > 140 ? '\u2026' : '');
-    var thumbHtml = p.vimeoId ? '<img src="https://vumbnail.com/' + p.vimeoId + '.jpg" alt="' + p.title + ' thumbnail" loading="lazy">' : '';
+    var thumbSrc = thumbCache[p.id] || '';
+    var thumbHtml = p.vimeoUrl ? '<img src="' + thumbSrc + '" alt="' + p.title + ' thumbnail" loading="lazy" style="opacity:' + (thumbSrc ? '1' : '0') + ';transition:opacity .3s">' : '';
     return '<article class="product-card" data-id="' + p.id + '" tabindex="0" role="button" aria-label="View ' + p.title + ' demo">' +
       '<div class="card-video" style="background:' + p.gradient + '">' + thumbHtml + '<div class="play-btn"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="8,5 19,12 8,19"/></svg></div></div>' +
       '<div class="card-body"><div class="card-meta"><span class="card-tag tag-category">' + p.category + '</span><span class="card-tag tag-product">' + p.product + '</span></div>' +
@@ -490,6 +507,7 @@ function renderCards() {
     card.addEventListener('click', function(){ openDetail(card.dataset.id); });
     card.addEventListener('keydown', function(e){ if(e.key==='Enter') openDetail(card.dataset.id); });
   });
+  fetchVimeoThumbs();
 }
 
 function getFilteredProducts() {
