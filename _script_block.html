@@ -1,0 +1,410 @@
+<script>
+/* ── CSV PARSER ── */
+function parseCSV(text) {
+  const rows = []; let cur = []; let field = ''; let inQ = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQ) {
+      if (c === '"' && text[i+1] === '"') { field += '"'; i++; }
+      else if (c === '"') { inQ = false; }
+      else { field += c; }
+    } else {
+      if (c === '"') { inQ = true; }
+      else if (c === ',') { cur.push(field.trim()); field = ''; }
+      else if (c === '\n' || (c === '\r' && text[i+1] === '\n')) {
+        cur.push(field.trim()); field = '';
+        if (cur.length > 1 || cur[0] !== '') rows.push(cur);
+        cur = [];
+        if (c === '\r') i++;
+      } else { field += c; }
+    }
+  }
+  cur.push(field.trim());
+  if (cur.length > 1 || cur[0] !== '') rows.push(cur);
+  return rows;
+}
+
+/* ── COLOR PALETTE (cycles per capability) ── */
+const accentPalette = ['#0094FF','#36B37E','#998DD9','#FFAB00','#00C7E6','#FF5C5C','#6554C0','#FF8B00'];
+function gradientFromAccent(hex) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  return `linear-gradient(135deg, rgba(${r},${g},${b},0.18), rgba(0,101,255,0.06))`;
+}
+
+/* ── GLOBALS ── */
+let products = [];
+let activeFilter = { type: 'all' };
+
+/* ── LOAD CSV & INIT ── */
+const grid = document.querySelector('.card-grid');
+grid.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><p>Loading features…</p></div>';
+
+fetch('ProductHub - Database.csv')
+  .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
+  .then(text => {
+    const rows = parseCSV(text);
+    const headers = rows[0].map(h => h.trim());
+    const col = name => headers.indexOf(name);
+
+    // Map CSV rows to product objects
+    const capabilityColors = {};
+    let colorIdx = 0;
+    products = rows.slice(1).map((row, i) => {
+      const get = name => (row[col(name)] || '').trim();
+      const capability = get('Capability');
+      if (!capabilityColors[capability]) {
+        capabilityColors[capability] = accentPalette[colorIdx % accentPalette.length];
+        colorIdx++;
+      }
+      const accent = capabilityColors[capability];
+      const keyFeatures = get('Key Features')
+        .split(';').map(s => s.trim()).filter(Boolean);
+      return {
+        id: 'feature-' + i,
+        title: get('Feature'),
+        capability: capability,
+        featureGroup: get('Feature Group'),
+        tags: get('Tags'),
+        category: get('Category'),
+        product: get('Product'),
+        problem: get('Problem'),
+        solution: get('Solution'),
+        features: keyFeatures,
+        value: get('Value'),
+        vimeoUrl: get('Vimeo URL'),
+        accent: accent,
+        gradient: gradientFromAccent(accent)
+      };
+    }).filter(p => p.title);
+
+    buildSidebar();
+    buildFilterPills();
+    renderCards();
+    bindEvents();
+    checkHash();
+  })
+  .catch(err => {
+    grid.innerHTML = `<div class="load-error">Could not load features data.<br><small>${err.message}</small></div>`;
+  });
+
+/* ── BUILD SIDEBAR ── */
+function buildSidebar() {
+  // Capabilities with Feature Group subgroups
+  const capNav = document.getElementById('sidebarCapabilities');
+  const capMap = new Map(); // capability → Set of featureGroups
+  products.forEach(p => {
+    if (!capMap.has(p.capability)) capMap.set(p.capability, new Set());
+    if (p.featureGroup) capMap.get(p.capability).add(p.featureGroup);
+  });
+  const chevronSvg = '<svg class="chevron" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  capMap.forEach((groups, cap) => {
+    const li = document.createElement('li');
+    li.className = 'sidebar-capability';
+    const hasGroups = groups.size > 0;
+    li.innerHTML = `<a href="#" data-capability="${cap}">${cap}${hasGroups ? chevronSvg : ''}</a>`;
+    if (hasGroups) {
+      const ul = document.createElement('ul');
+      ul.className = 'sidebar-subgroup';
+      groups.forEach(g => {
+        ul.innerHTML += `<li><a href="#" data-featuregroup="${g}">${g}</a></li>`;
+      });
+      li.appendChild(ul);
+    }
+    capNav.appendChild(li);
+  });
+
+  // Categories
+  const catNav = document.getElementById('sidebarCategories');
+  const cats = [...new Set(products.map(p => p.category).filter(Boolean))];
+  cats.forEach(c => {
+    catNav.innerHTML += `<li><a href="#" data-category="${c}">${c}</a></li>`;
+  });
+
+  // Products
+  const prodNav = document.getElementById('sidebarProducts');
+  const prods = [...new Set(products.map(p => p.product).filter(Boolean))];
+  prods.forEach(p => {
+    prodNav.innerHTML += `<li><a href="#" data-product="${p}">${p}</a></li>`;
+  });
+}
+
+/* ── BUILD FILTER PILLS (dynamic from data) ── */
+function buildFilterPills() {
+  const bar = document.querySelector('.filter-bar');
+  const searchBox = bar.querySelector('.search-box');
+  // Remove old static pills (keep search + view toggle)
+  bar.querySelectorAll('.filter-pill').forEach(p => p.remove());
+  // All pill
+  const allPill = document.createElement('button');
+  allPill.className = 'filter-pill active';
+  allPill.dataset.filter = 'all';
+  allPill.textContent = 'All';
+  bar.insertBefore(allPill, searchBox);
+  // Category pills
+  const cats = [...new Set(products.map(p => p.category).filter(Boolean))];
+  cats.forEach(c => {
+    const pill = document.createElement('button');
+    pill.className = 'filter-pill';
+    pill.dataset.filter = 'cat:' + c;
+    pill.textContent = c;
+    bar.insertBefore(pill, searchBox);
+  });
+  // Product pills
+  const prods = [...new Set(products.map(p => p.product).filter(Boolean))];
+  prods.forEach(p => {
+    const pill = document.createElement('button');
+    pill.className = 'filter-pill';
+    pill.dataset.filter = 'prod:' + p;
+    pill.textContent = p;
+    bar.insertBefore(pill, searchBox);
+  });
+}
+
+/* ── RENDER CARDS ── */
+function renderCards() {
+  const filtered = getFilteredProducts();
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="load-error" style="color:var(--body-gray)">No features match the current filter.</div>';
+    return;
+  }
+  grid.innerHTML = filtered.map(p => `
+    <article class="product-card" data-id="${p.id}" tabindex="0" role="button" aria-label="View ${p.title} demo">
+      <div class="card-video" style="background:${p.gradient}">
+        <div class="play-btn">
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="8,5 19,12 8,19"/></svg>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-tag tag-category">${p.category}</span>
+          <span class="card-tag tag-product">${p.product}</span>
+        </div>
+        <h3>${p.title}</h3>
+        <p class="card-desc">${(p.problem || '').substring(0, 140)}${p.problem && p.problem.length > 140 ? '\u2026' : ''}</p>
+        <div class="card-footer">
+          <span class="text-link" style="font-size:12px">Learn More \u2192</span>
+          <span class="watch-time" style="font-size:12px;color:var(--body-gray)">${p.capability} · ${p.featureGroup}</span>
+        </div>
+      </div>
+    </article>
+  `).join('');
+
+  grid.querySelectorAll('.product-card').forEach(card => {
+    card.addEventListener('click', () => openDetail(card.dataset.id));
+    card.addEventListener('keydown', e => { if (e.key === 'Enter') openDetail(card.dataset.id); });
+  });
+}
+
+function getFilteredProducts() {
+  const q = (document.querySelector('.search-box input')?.value || '').toLowerCase();
+  return products.filter(p => {
+    // Search filter
+    if (q && !p.title.toLowerCase().includes(q) && !p.problem.toLowerCase().includes(q) && !p.tags.toLowerCase().includes(q)) return false;
+    // Sidebar / pill filter
+    const f = activeFilter;
+    if (f.type === 'all') return true;
+    if (f.type === 'capability') return p.capability === f.value;
+    if (f.type === 'featureGroup') return p.featureGroup === f.value;
+    if (f.type === 'category') return p.category === f.value;
+    if (f.type === 'product') return p.product === f.value;
+    return true;
+  });
+}
+
+/* ── DETAIL PANEL ── */
+function openDetail(id) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  const detailVideo = document.querySelector('.detail-video');
+  // If Vimeo URL exists, embed it; otherwise show gradient + play button
+  if (p.vimeoUrl) {
+    const vimeoId = p.vimeoUrl.match(/vimeo\.com\/(\d+)/)?.[1] || p.vimeoUrl.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1];
+    if (vimeoId) {
+      detailVideo.innerHTML = `<iframe src="https://player.vimeo.com/video/${vimeoId}?autoplay=0&title=0&byline=0&portrait=0" style="width:100%;height:100%;border:none" allow="autoplay;fullscreen" allowfullscreen></iframe>`;
+      detailVideo.style.background = '#000';
+    } else {
+      detailVideo.innerHTML = '<div class="play-btn-lg"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6,3 20,12 6,21"/></svg></div>';
+      detailVideo.style.background = p.gradient;
+    }
+  } else {
+    detailVideo.innerHTML = '<div class="play-btn-lg"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6,3 20,12 6,21"/></svg></div>';
+    detailVideo.style.background = p.gradient;
+  }
+
+  const content = document.getElementById('detailContent');
+  content.innerHTML = `
+    <div class="detail-meta">
+      <span class="card-tag tag-category">${p.category}</span>
+      <span class="card-tag tag-product">${p.product}</span>
+      <span class="detail-meta-item" style="font-size:12px;color:var(--body-gray)">${p.capability} · ${p.featureGroup}</span>
+      <span class="detail-meta-item share" onclick="navigator.clipboard.writeText(location.origin+location.pathname+'#'+encodeURIComponent('${p.id}'));this.textContent='Copied!'">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M6 7l4-3M6 9l4 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="4" cy="8" r="2" stroke="currentColor" stroke-width="1.2"/><circle cx="12" cy="4" r="2" stroke="currentColor" stroke-width="1.2"/><circle cx="12" cy="12" r="2" stroke="currentColor" stroke-width="1.2"/></svg>
+        Copy link
+      </span>
+    </div>
+    <h2>${p.title}</h2>
+    <div class="detail-block">
+      <div class="detail-block-label" style="color:#FF5C5C"><span class="dot" style="background:#FF5C5C"></span> Problem</div>
+      <p>${p.problem}</p>
+    </div>
+    <div class="detail-block">
+      <div class="detail-block-label" style="color:var(--green)"><span class="dot" style="background:var(--green)"></span> Solution</div>
+      <p>${p.solution}</p>
+    </div>
+    <div class="detail-block">
+      <div class="detail-block-label" style="color:var(--sky-blue)"><span class="dot" style="background:var(--sky-blue)"></span> Key Features</div>
+      <ul class="detail-features">
+        ${p.features.map(f => `<li><span class="check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6l2.5 2.5 4.5-5" stroke="#1F222A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>${f}</li>`).join('')}
+      </ul>
+    </div>
+    ${p.value ? `<div class="detail-block"><div class="detail-value"><div class="detail-value-label">Value</div><p>${p.value}</p></div></div>` : ''}
+  `;
+  document.getElementById('detailOverlay').classList.add('open');
+  document.getElementById('detailPanel').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  history.replaceState(null, '', '#' + encodeURIComponent(p.id));
+}
+
+function closeDetail() {
+  document.getElementById('detailOverlay').classList.remove('open');
+  document.getElementById('detailPanel').classList.remove('open');
+  document.body.style.overflow = '';
+  // Clear iframe if present
+  const dv = document.querySelector('.detail-video');
+  dv.innerHTML = '<div class="play-btn-lg"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6,3 20,12 6,21"/></svg></div>';
+  history.replaceState(null, '', location.pathname);
+}
+
+/* ── EVENT BINDING ── */
+function bindEvents() {
+  // Close detail
+  document.getElementById('detailClose').addEventListener('click', closeDetail);
+  document.getElementById('detailOverlay').addEventListener('click', closeDetail);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
+
+  // Helper: clear all active states in sidebar
+  function clearSidebarActive() {
+    document.querySelectorAll('#sidebar a').forEach(a => a.classList.remove('active'));
+  }
+
+  // Sidebar: "All" link
+  document.querySelector('#sidebarCapabilities a[data-filter="all"]').addEventListener('click', e => {
+    e.preventDefault();
+    clearSidebarActive();
+    e.target.classList.add('active');
+    activeFilter = { type: 'all' };
+    syncPills('all');
+    renderCards();
+  });
+
+  // Sidebar: Capability links (toggle subgroup accordion)
+  document.querySelectorAll('.sidebar-capability > a[data-capability]').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const li = link.parentElement;
+      const wasOpen = li.classList.contains('open');
+      // Close all accordions
+      document.querySelectorAll('.sidebar-capability').forEach(el => el.classList.remove('open'));
+      if (!wasOpen) li.classList.add('open');
+      clearSidebarActive();
+      link.classList.add('active');
+      activeFilter = { type: 'capability', value: link.dataset.capability };
+      syncPills(null);
+      renderCards();
+    });
+  });
+
+  // Sidebar: Feature Group (subgroup) links
+  document.querySelectorAll('.sidebar-subgroup a[data-featuregroup]').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      clearSidebarActive();
+      link.classList.add('active');
+      // Keep parent capability accordion open
+      link.closest('.sidebar-capability').classList.add('open');
+      activeFilter = { type: 'featureGroup', value: link.dataset.featuregroup };
+      syncPills(null);
+      renderCards();
+    });
+  });
+
+  // Sidebar: Category links
+  document.querySelectorAll('#sidebarCategories a[data-category]').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      clearSidebarActive();
+      link.classList.add('active');
+      activeFilter = { type: 'category', value: link.dataset.category };
+      syncPills('cat:' + link.dataset.category);
+      renderCards();
+    });
+  });
+
+  // Sidebar: Product links
+  document.querySelectorAll('#sidebarProducts a[data-product]').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      clearSidebarActive();
+      link.classList.add('active');
+      activeFilter = { type: 'product', value: link.dataset.product };
+      syncPills('prod:' + link.dataset.product);
+      renderCards();
+    });
+  });
+
+  // Filter pills
+  document.querySelectorAll('.filter-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      const f = pill.dataset.filter;
+      clearSidebarActive();
+      if (f === 'all') {
+        activeFilter = { type: 'all' };
+        document.querySelector('#sidebarCapabilities a[data-filter="all"]').classList.add('active');
+      } else if (f.startsWith('cat:')) {
+        activeFilter = { type: 'category', value: f.slice(4) };
+      } else if (f.startsWith('prod:')) {
+        activeFilter = { type: 'product', value: f.slice(5) };
+      }
+      renderCards();
+    });
+  });
+
+  // Search
+  document.querySelector('.search-box input').addEventListener('input', () => renderCards());
+
+  // View toggle
+  document.querySelectorAll('.view-toggle button').forEach((btn, i) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.view-toggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      if (i === 1) grid.classList.add('list-view'); else grid.classList.remove('list-view');
+    });
+  });
+}
+
+function syncPills(filterValue) {
+  document.querySelectorAll('.filter-pill').forEach(p => {
+    p.classList.toggle('active', p.dataset.filter === filterValue);
+  });
+}
+
+/* ── DEEP LINKING ── */
+function checkHash() {
+  const hash = location.hash.replace(/^#+/, '');
+  if (hash) {
+    const id = decodeURIComponent(hash);
+    const p = products.find(x => x.id === id);
+    if (p) openDetail(id);
+  }
+}
+window.addEventListener('hashchange', () => {
+  const hash = location.hash.replace(/^#+/, '');
+  if (hash) {
+    const id = decodeURIComponent(hash);
+    if (products.find(x => x.id === id)) openDetail(id);
+  } else { closeDetail(); }
+});
+</script>
