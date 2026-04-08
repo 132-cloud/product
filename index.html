@@ -493,7 +493,7 @@ function renderCards() {
   var filtered = getFilteredProducts();
   if (!filtered.length) { grid.innerHTML = '<div class="load-error" style="color:var(--body-gray)">No features match the current filter.</div>'; return; }
   grid.innerHTML = filtered.map(function(p) {
-    var desc = (p.problem || '').substring(0, 140) + (p.problem && p.problem.length > 140 ? '\u2026' : '');
+    var desc = (p.solution || '').substring(0, 140) + (p.solution && p.solution.length > 140 ? '\u2026' : '');
     var thumbSrc = thumbCache[p.id] || '';
     var thumbHtml = p.vimeoUrl ? '<img src="' + thumbSrc + '" alt="' + p.title + ' thumbnail" loading="lazy" style="opacity:' + (thumbSrc ? '1' : '0') + ';transition:opacity .3s">' : '';
     return '<article class="product-card" data-id="' + p.id + '" tabindex="0" role="button" aria-label="View ' + p.title + ' demo">' +
