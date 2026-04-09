@@ -71,9 +71,9 @@ nav .nav-inner{max-width:1280px;margin:0 auto;padding:0 32px;display:flex;align-
 .hub-hero p{font-size:18px;line-height:28px;color:var(--white-80);max-width:640px}
 
 /* FILTER BAR */
-.filter-bar{display:flex;align-items:center;gap:12px;padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:32px}
+.filter-bar{display:flex;align-items:flex-start;gap:12px;padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:32px}
 .filter-pills{display:flex;flex-wrap:wrap;gap:8px;flex:1;min-width:0}
-.filter-controls{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.filter-controls{display:flex;align-items:flex-start;gap:8px;flex-shrink:0}
 .filter-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid rgba(255,255,255,0.15);color:var(--body-gray);background:transparent;transition:all .2s}
 .filter-pill:hover{border-color:rgba(255,255,255,0.3);color:#fff}
 .filter-pill.active{background:var(--primary-blue);border-color:var(--primary-blue);color:#fff}
@@ -84,7 +84,7 @@ nav .nav-inner{max-width:1280px;margin:0 auto;padding:0 32px;display:flex;align-
 .search-box input:focus{outline:none;border-color:var(--sky-blue);background:rgba(0,101,255,0.08)}
 .search-box svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--body-gray)}
 .view-toggle{display:flex;border:1px solid rgba(255,255,255,0.1);border-radius:8px;overflow:hidden;margin-left:8px}
-.view-toggle button{background:transparent;border:none;padding:7px 12px;color:var(--body-gray);transition:all .2s}
+.view-toggle button{background:transparent;border:none;padding:7px 12px;color:var(--body-gray);transition:all .2s;display:flex;align-items:center;gap:6px;font-family:var(--font);font-size:13px;font-weight:600}
 .view-toggle button.active{background:rgba(255,255,255,0.08);color:#fff}
 .view-toggle button:hover{color:#fff}
 
@@ -254,7 +254,7 @@ footer .footer-inner{max-width:1280px;margin:0 auto;padding:0 32px}
 </div>
 <p class="eyebrow eyebrow-sm" style="color:var(--green);margin-bottom:16px">Product Knowledge Hub</p>
 <h1>Core Business Banking <em>Capabilities</em></h1>
-<p>Explore key features designed to support and scale banking operations, with video walkthroughs for each.</p>
+<p>Explore key features designed to support and scale business banking operations, with video walkthroughs for each.</p>
 </div>
 
 <!-- FILTER BAR -->
@@ -278,9 +278,11 @@ Core
 <div class="view-toggle">
 <button class="active" aria-label="Grid view">
 <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="9" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="1" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="9" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/></svg>
+Grid
 </button>
 <button aria-label="List view">
 <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1 4h14M1 8h14M1 12h14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+List
 </button>
 </div>
 </div>
@@ -548,14 +550,27 @@ function openDetail(id) {
   document.getElementById('detailContent').innerHTML =
     '<div class="detail-meta"><span class="card-tag tag-category">' + p.category + '</span><span class="card-tag tag-product">' + p.product + '</span>' +
     '<span class="detail-meta-item" style="font-size:12px;color:var(--body-gray)">' + p.capability + ' \u00b7 ' + p.featureGroup + '</span>' +
+    '<span class="detail-meta-item" id="detailDuration" style="font-size:12px;color:var(--body-gray)"><svg viewBox="0 0 16 16" fill="none" style="width:14px;height:14px"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/><path d="M8 5v3.5l2.5 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' +
     '<span class="detail-meta-item share" onclick="navigator.clipboard.writeText(location.origin+location.pathname+\'#\'+encodeURIComponent(\'' + p.id + '\'));this.textContent=\'Copied!\'">' +
     '<svg viewBox="0 0 16 16" fill="none"><path d="M6 7l4-3M6 9l4 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="4" cy="8" r="2" stroke="currentColor" stroke-width="1.2"/><circle cx="12" cy="4" r="2" stroke="currentColor" stroke-width="1.2"/><circle cx="12" cy="12" r="2" stroke="currentColor" stroke-width="1.2"/></svg> Copy link</span></div>' +
     '<h2>' + p.title + '</h2>' +
-    '<div class="detail-block"><div class="detail-block-label" style="color:#FF5C5C"><span class="dot" style="background:#FF5C5C"></span> Problem</div><p>' + p.problem + '</p></div>' +
-    '<div class="detail-block"><div class="detail-block-label" style="color:var(--green)"><span class="dot" style="background:var(--green)"></span> Solution</div><p>' + p.solution + '</p></div>' +
-    '<div class="detail-block"><div class="detail-block-label" style="color:var(--sky-blue)"><span class="dot" style="background:var(--sky-blue)"></span> Key Features</div>' +
+    '<div class="detail-block"><div class="detail-block-label" style="color:#FF5C5C">Problem</div><p>' + p.problem + '</p></div>' +
+    '<div class="detail-block"><div class="detail-block-label" style="color:var(--green)">Solution</div><p>' + p.solution + '</p></div>' +
+    '<div class="detail-block"><div class="detail-block-label" style="color:var(--sky-blue)">Key Features</div>' +
     '<ul class="detail-features">' + p.features.map(function(f){ return '<li><span class="check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6l2.5 2.5 4.5-5" stroke="#1F222A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' + f + '</li>'; }).join('') + '</ul></div>' +
     (p.value ? '<div class="detail-block"><div class="detail-value"><div class="detail-value-label">Value</div><p>' + p.value + '</p></div></div>' : '');
+
+  // Fetch duration from oEmbed
+  if (p.vimeoUrl) {
+    var oembedUrl = 'https://vimeo.com/api/oembed.json?url=' + encodeURIComponent(p.vimeoUrl.split('?')[0]);
+    fetch(oembedUrl).then(function(r){ return r.ok ? r.json() : null; }).then(function(data) {
+      if (data && data.duration) {
+        var mins = Math.round(data.duration / 60) || 1;
+        var el = document.getElementById('detailDuration');
+        if (el) el.innerHTML = '<svg viewBox="0 0 16 16" fill="none" style="width:14px;height:14px"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/><path d="M8 5v3.5l2.5 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg> ' + mins + ' min';
+      }
+    }).catch(function(){});
+  }
 
   document.getElementById('detailPanel').scrollTop = 0;
   document.getElementById('detailOverlay').classList.add('open');
