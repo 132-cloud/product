@@ -287,6 +287,9 @@ footer .footer-inner{max-width:1280px;margin:0 auto;padding:0 32px}
 
 <!-- HERO -->
 <div class="hub-hero">
+<div class="client-logo" style="margin-bottom:20px">
+<img src="https://res.cloudinary.com/duio2kdnj/image/upload/v1775542977/WaFdBank.png" alt="WaFd Bank" height="28">
+</div>
 <p class="eyebrow eyebrow-sm" style="color:var(--green);margin-bottom:16px">Product Knowledge Hub</p>
 <h1>Core Business Banking <em>Capabilities</em></h1>
 <p>Explore key features designed to support and scale business banking operations, with video walkthroughs for each.</p>
@@ -414,7 +417,7 @@ var grid = document.querySelector('.card-grid');
 grid.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><p>Loading features\u2026</p></div>';
 
 /* ── LOAD CSV ── */
-fetch('ProductHub - Database.csv')
+fetch('../ProductHub - Database.csv')
   .then(function(r) { if (!r.ok) throw new Error(r.status); return r.text(); })
   .then(function(text) {
     var rows = parseCSV(text);
@@ -716,7 +719,7 @@ window.addEventListener('hashchange', function() {
 <script>
 (function(){
   /* ── Change this password to whatever you want ── */
-  var SITE_PASSWORD = 'nymbus2026';
+  var SITE_PASSWORD = 'wafd2026';
 
   var overlay = document.getElementById('loginOverlay');
   var content = document.getElementById('siteContent');
